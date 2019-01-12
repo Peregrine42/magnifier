@@ -8,5 +8,5 @@ See `.tool_versions`, and optionally the asdf version manager (https://github.co
 
 # Development Setup
 
-  npm install
-  npm dev
+  `npm install`
+  `npm dev`
