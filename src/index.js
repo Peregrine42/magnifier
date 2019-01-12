@@ -1,3 +1,4 @@
-import bar from './bar'
+import waitForDOM from "./utils/waitForDOM"
+import main from "./main"
 
-bar()
+waitForDOM().then(main)
