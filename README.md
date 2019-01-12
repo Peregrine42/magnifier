@@ -1,6 +1,6 @@
 # Magnifier
 
-An SVG-based demo slippy map.
+A slippy map demo.
 
 # Dependencies
 
