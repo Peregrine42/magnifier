@@ -10,5 +10,5 @@ See `.tool_versions`, and optionally the asdf version manager (https://github.co
 
 ```  
   npm install
-  npm dev
+  npm run dev
 ```
