@@ -26,6 +26,9 @@
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
     "babel-loader": "^8.0.5",
+    "jest": "^23.6.0",
+    "jest-puppeteer": "^3.8.0",
+    "puppeteer": "^1.11.0",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1",
     "webpack-merge": "^4.2.1"
