@@ -4,7 +4,10 @@
   "description": "A slippy map demo.",
   "main": "index.html",
   "scripts": {
+    "setup": "./node_modules/.bin/webdriver-manager update",
+    "webdriver": "./node_modules/.bin/webdriver-manager start",
     "test": "./node_modules/.bin/jest",
+    "browser-test": "node test/browser.js",
     "build": "./node_modules/.bin/webpack --config webpack.prod.config.js",
     "dev": "./node_modules/.bin/webpack --config webpack.dev.config.js"
   },
@@ -30,9 +33,9 @@
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.5",
     "jest": "^23.6.0",
-    "jest-puppeteer": "^3.8.0",
-    "puppeteer": "^1.11.0",
     "regenerator-runtime": "^0.13.1",
+    "selenium-webdriver": "^4.0.0-alpha.1",
+    "webdriver-manager": "^12.1.1",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1",
     "webpack-merge": "^4.2.1"
