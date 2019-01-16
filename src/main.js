@@ -1,8 +1,9 @@
-import forEachElement from "./utils/forEachElement"
+import eachElement from "./utils/eachElement"
 
 export default function main() {
-  console.log("Hello, world!")
-  forEachElement(".container", (el, i) => {
-    console.log(el)
-  })
+    console.log("Hello, world!")
+
+    for (var element of eachElement(".container")) {
+        console.log(el)
+    }
 }
