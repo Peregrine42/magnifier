@@ -3,3 +3,7 @@ circle {
   stroke: black;
   stroke-width: 1.5;
 }
+
+rect {
+  fill: green;
+}
