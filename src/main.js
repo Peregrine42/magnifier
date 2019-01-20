@@ -25,7 +25,26 @@ function handleClick(d, i, scope, ranges) {
     const pos = d3.mouse(this)
     const coords = [xRange.invert(pos[0]), yRange.invert(pos[1])]
 
-    d.points.push(coords)
+    if (d.selectedIndices.size > 0) {
+        const first = [...d.selectedIndices].slice(-1)[0]
+        const refX = d.points[first][0]
+        const refY = d.points[first][1]
+
+        const xOffset = coords[0] - refX
+        const yOffset = coords[1] - refY
+
+        if (xOffset != 0 && yOffset != 0) {
+            for (let i=0; i<d.points.length; i++) {
+                if (d.selectedIndices.has(i)) {
+                    d.points[i][0] += xOffset
+                    d.points[i][1] += yOffset
+                }
+            }
+        }
+
+    }
+
+    // d.points.push(coords)
     d.selectedIndices.clear()
     render(scope, ranges)
 }
@@ -41,8 +60,8 @@ export default function main() {
     console.log("Hello, world!")
 
     const data = [
-        new Field(460, 280, []),
-        new Field(360, 180, [])
+        new Field(460, 280, makeCoords(3)),
+        new Field(360, 180, makeCoords(4))
     ]
 
     d3
@@ -96,18 +115,6 @@ export default function main() {
 function render(scope, ranges) {
     scope
         .selectAll("circle")
-        .attr("fill", (p, i) => {
-            return p.selection.has(i) ? "orange" : "grey"
-        })
-        .attr("r", (p) => {
-            return p.xRange(p.radius)
-        })
-        .attr("cx", (p) => {
-            return p.xRange(p.x)
-        })
-        .attr("cy", (p) => {
-            return p.yRange(p.y)
-        })
         .data((field, i) => {
             const xRange = ranges[i].x
             const yRange = ranges[i].y
@@ -122,6 +129,18 @@ function render(scope, ranges) {
                 }
             })
             return points
+        })
+        .attr("fill", (p, i) => {
+            return p.selection.has(i) ? "orange" : "grey"
+        })
+        .attr("r", (p) => {
+            return p.xRange(p.radius)
+        })
+        .attr("cx", (p) => {
+            return p.xRange(p.x)
+        })
+        .attr("cy", (p) => {
+            return p.yRange(p.y)
         })
         .enter().append("circle")
         .on("click", function(d, i) {
