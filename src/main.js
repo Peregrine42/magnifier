@@ -2,10 +2,11 @@ import * as d3 from "d3"
 import range from "./utils/range"
 
 class Field {
-    constructor(width, height, points) {
+    constructor(width, height, points, indices = new Set([])) {
         this.width = width
         this.height = height
         this.points = points
+        this.selectedIndices = indices
     }
 }
 
@@ -25,6 +26,14 @@ function handleClick(d, i, scope, ranges) {
     const coords = [xRange.invert(pos[0]), yRange.invert(pos[1])]
 
     d.points.push(coords)
+    d.selectedIndices.clear()
+    render(scope, ranges)
+}
+
+function handlePointClick(d, i, scope, ranges) {
+    if (d.selection.has(i)) { d.selection.delete(i) }
+    else { d.selection.add(i) }
+    d3.event.stopPropagation()
     render(scope, ranges)
 }
 
@@ -87,21 +96,9 @@ export default function main() {
 function render(scope, ranges) {
     scope
         .selectAll("circle")
-        .data((field, i) => {
-            const xRange = ranges[i].x
-            const yRange = ranges[i].y
-            let points = field.points.map((coord) => {
-                return {
-                    radius: 0.03,
-                    x: coord[0],
-                    y: coord[1],
-                    xRange: xRange,
-                    yRange: yRange
-                }
-            })
-            return points
+        .attr("fill", (p, i) => {
+            return p.selection.has(i) ? "orange" : "grey"
         })
-        .enter().append("circle")
         .attr("r", (p) => {
             return p.xRange(p.radius)
         })
@@ -110,5 +107,36 @@ function render(scope, ranges) {
         })
         .attr("cy", (p) => {
             return p.yRange(p.y)
+        })
+        .data((field, i) => {
+            const xRange = ranges[i].x
+            const yRange = ranges[i].y
+            let points = field.points.map((coord, j) => {
+                return {
+                    radius: 0.03,
+                    x: coord[0],
+                    y: coord[1],
+                    xRange: xRange,
+                    yRange: yRange,
+                    selection: field.selectedIndices
+                }
+            })
+            return points
+        })
+        .enter().append("circle")
+        .on("click", function(d, i) {
+            handlePointClick.bind(this)(d, i, scope, ranges)
+        })
+        .attr("r", (p) => {
+            return p.xRange(p.radius)
+        })
+        .attr("cx", (p) => {
+            return p.xRange(p.x)
+        })
+        .attr("cy", (p) => {
+            return p.yRange(p.y)
+        })
+        .attr("fill", (p, i) => {
+            return p.selection.has(i) ? "orange" : "grey"
         })
 }
