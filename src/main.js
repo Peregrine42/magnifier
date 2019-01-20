@@ -1,29 +1,6 @@
 import * as d3 from "d3"
 import range from "./utils/range"
 
-class Point {
-    constructor(x, y, xRange, yRange) {
-        this.x = x
-        this.y = y
-        this.radius = 0.1
-
-        this.xRange = xRange
-        this.yRange = yRange
-    }
-
-    x() {
-        return this.xRange(this.x)
-    }
-
-    y() {
-        return this.yRange(this.y)
-    }
-
-    radius() {
-        return this.xRange(this.radius)
-    }
-}
-
 class Field {
     constructor(width, height, points) {
         this.width = width
@@ -31,7 +8,6 @@ class Field {
         this.points = points
     }
 }
-
 
 function makeCoords(max) {
     let result = []
@@ -41,12 +17,23 @@ function makeCoords(max) {
     return result
 }
 
+function handleClick(d, i, scope, ranges) {
+    const xRange = ranges[i].x
+    const yRange = ranges[i].y
+
+    const pos = d3.mouse(this)
+    const coords = [xRange.invert(pos[0]), yRange.invert(pos[1])]
+
+    d.points.push(coords)
+    render(scope, ranges)
+}
+
 export default function main() {
     console.log("Hello, world!")
 
     const data = [
-        new Field(460, 280, makeCoords(3)),
-        new Field(360, 180, makeCoords(4))
+        new Field(460, 280, []),
+        new Field(360, 180, [])
     ]
 
     d3
@@ -84,18 +71,34 @@ export default function main() {
             let yScale = d3.scaleLinear()
                 .domain([0, 1])
                 .range([0, node.height])
-            return { x: xScale, y: yScale }
+            return {
+                x: xScale,
+                y: yScale
+            }
         })
 
+    scope.on("click", function(d, i) {
+        handleClick.bind(this)(d, i, scope, ranges)
+    })
+
+    render(scope, ranges)
+}
+
+function render(scope, ranges) {
     scope
         .selectAll("circle")
         .data((field, i) => {
             const xRange = ranges[i].x
             const yRange = ranges[i].y
             let points = field.points.map((coord) => {
-                return { radius: 0.03, x: coord[0], y: coord[1], xRange: xRange, yRange: yRange }
+                return {
+                    radius: 0.03,
+                    x: coord[0],
+                    y: coord[1],
+                    xRange: xRange,
+                    yRange: yRange
+                }
             })
-            console.log(points)
             return points
         })
         .enter().append("circle")
