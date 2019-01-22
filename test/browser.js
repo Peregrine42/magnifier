@@ -45,14 +45,15 @@ function startServer(port) {
 (async function example() {
   let h = startServer(8000)
 
+  let driver = new webdriver.Builder()
+    .forBrowser('internet explorer')
+    .usingServer('http://localhost:4444/wd/hub')
+    .build();
   try {
-    let driver = new webdriver.Builder()
-      .forBrowser('firefox')
-      .usingServer('http://localhost:4444/wd/hub')
-      .build();
 
-    await driver.get('http://localhost:8000');
+    await driver.get('http://10.0.2.2:8000');
     await driver.wait(until.titleIs('Magnifier'), 1000);
+    console.log("We got the page!")
   } finally {
     if (driver) {
       await driver.quit();
